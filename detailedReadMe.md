@@ -1,6 +1,6 @@
 # Simple Banking System
 
-This repository contains SQL scripts for setting up and testing a simple banking system database. [cite: 1, 2, 3] The system includes functionalities for customer account management, transactions (deposits, withdrawals, transfers), employee management, and transaction logging. [cite: 1, 2, 3]
+This repository contains SQL scripts for setting up and testing a simple banking system database. The system includes functionalities for customer account management, transactions (deposits, withdrawals, transfers), employee management, and transaction logging. 
 
 ## Table of Contents
 
@@ -30,8 +30,8 @@ The database schema consists of the following tables:
     |   Phone       |   VARCHAR(15)   |   Customer phone number (unique)                                               |
     |   Address     |   VARCHAR(255)  |   Customer address                                                             |
     |   RequestedDate   |   DATETIME    |   Date and time of the account request                                         |
-    |   Status      |   VARCHAR(20)   |   Status of the request ('Pending', 'Approved', 'Rejected')                     |
-    |   Password    |   VARCHAR(255)  |   Hashed password for the customer                                             |
+    |   Status      |   VARCHAR(20)   |   Status of the request ('Pending', 'Approved', 'Rejected')                     |                                     
+
 * **CUSTOMER**
 
     |   Column Name   |   Data Type   |   Description                                                                  |
@@ -42,8 +42,7 @@ The database schema consists of the following tables:
     |   Phone       |   VARCHAR(15)   |   Customer phone number (unique)                                               |
     |   Address     |   VARCHAR(255)  |   Customer address                                                             |
     |   ApprovedDate    |   DATETIME    |   Date and time of account approval                                            |
-    |   Status      |   VARCHAR(20)   |   Customer status ('Active', 'Suspended')                                     |
-    |   Password    |   VARCHAR(255)  |   Hashed password for the customer                                             |
+    |   Status      |   VARCHAR(20)   |   Customer status ('Active', 'Suspended')                                     |                                           |
 * **EMPLOYEE**
 
     |   Column Name   |   Data Type   |   Description                                        |
@@ -53,7 +52,7 @@ The database schema consists of the following tables:
     |   Email       |   VARCHAR(100)  |   Employee email (unique)                            |
     |   Phone       |   VARCHAR(15)   |   Employee phone number (unique)                     |
     |   Role        |   VARCHAR(50)   |   Employee role                                      |
-    |   Password    |   VARCHAR(255)  |   Hashed password for the employee                   |
+
 * **ACCOUNT**
 
     |   Column Name   |   Data Type   |   Description                                                  |
@@ -102,11 +101,11 @@ The database schema consists of the following tables:
 
 The system includes several stored procedures for various operations:
 
-* **RequestAccount(IN `cust_name` VARCHAR(100), IN `cust_email` VARCHAR(100), IN `cust_phone` VARCHAR(15), IN `cust_address` VARCHAR(255), IN `cust_password` VARCHAR(255))**
-    * Description:  Inserts a new customer account request into the `CUSTOMER_REQUEST` table. [cite: 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
+* **RequestAccount(IN `cust_name` VARCHAR(100), IN `cust_email` VARCHAR(100), IN `cust_phone` VARCHAR(15), IN `cust_address`)**
+    * Description:  Inserts a new customer account request into the `CUSTOMER_REQUEST`
     * Parameters:
         * `cust_name`:  Customer name.
-        * `cust_email`: Customer email. [cite: 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
+        * `cust_email`: Customer email. 
         * `cust_phone`: Customer phone number.
         * `cust_address`: Customer address.
         * `cust_password`: Customer password.
