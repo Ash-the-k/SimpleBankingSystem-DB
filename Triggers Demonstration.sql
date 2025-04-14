@@ -33,8 +33,6 @@ SELECT @jane_smith_acc := AccountNo FROM ACCOUNT WHERE CustomerID = (SELECT Cust
 -- Deposit some initial funds
 CALL DepositWithLog(@john_doe_acc, 100.00, (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
 CALL DepositWithLog(@jane_smith_acc, 100.00, (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
-CALL ApproveTransactionRequest((SELECT RequestID FROM TRANSACTION_REQUESTS WHERE ReceiverAcc = @john_doe_acc AND Type = 'Deposit' AND Status = 'Pending'), 1);
-CALL ApproveTransactionRequest((SELECT RequestID FROM TRANSACTION_REQUESTS WHERE ReceiverAcc = @jane_smith_acc AND Type = 'Deposit' AND Status = 'Pending'), 1);
 
 SELECT '--- Initial Balances ---' AS Report;
 SELECT c.Name, a.AccountNo, a.Balance FROM CUSTOMER c JOIN ACCOUNT a ON c.CustomerID = a.CustomerID WHERE a.AccountNo IN (@john_doe_acc, @jane_smith_acc);
