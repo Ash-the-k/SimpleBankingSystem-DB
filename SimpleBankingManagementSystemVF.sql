@@ -18,8 +18,7 @@ CREATE TABLE CUSTOMER_REQUEST (
     Phone VARCHAR(15) NOT NULL UNIQUE,
     Address VARCHAR(255) NOT NULL,
     RequestedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Status VARCHAR(20) NOT NULL DEFAULT 'Pending' CHECK (Status IN ('Pending','Approved','Rejected')),
-    Password VARCHAR(255) NOT NULL
+    Status VARCHAR(20) NOT NULL DEFAULT 'Pending' CHECK (Status IN ('Pending','Approved','Rejected'))
 ) ENGINE=InnoDB;
  
 CREATE TABLE CUSTOMER (
@@ -29,8 +28,7 @@ CREATE TABLE CUSTOMER (
     Phone VARCHAR(15) NOT NULL UNIQUE,
     Address VARCHAR(255) NOT NULL,
     ApprovedDate DATETIME NOT NULL,
-    Status VARCHAR(20) NOT NULL CHECK (Status IN ('Active','Suspended')),
-    Password VARCHAR(255) NOT NULL
+    Status VARCHAR(20) NOT NULL CHECK (Status IN ('Active','Suspended'))
 ) ENGINE=InnoDB;
 
 
@@ -39,8 +37,7 @@ CREATE TABLE EMPLOYEE (
     Name VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Phone VARCHAR(15) NOT NULL UNIQUE,
-    Role VARCHAR(50) NOT NULL,
-    Password VARCHAR(255) NOT NULL
+    Role VARCHAR(50) NOT NULL
 ) ENGINE=InnoDB;
 
 
@@ -129,7 +126,6 @@ BEGIN
     DECLARE v_email VARCHAR(100);
     DECLARE v_phone VARCHAR(15);
     DECLARE v_addr  VARCHAR(255);
-    DECLARE v_password VARCHAR(255); 
     DECLARE v_newCust INT;
 
     -- Validate employee
@@ -138,9 +134,9 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid Employee: Approval denied';
     END IF;
 
-    -- Load request including password
-    SELECT Status, Name, Email, Phone, Address, Password
-      INTO v_status, v_name, v_email, v_phone, v_addr, v_password
+    -- Load request 
+    SELECT Status, Name, Email, Phone, Address
+      INTO v_status, v_name, v_email, v_phone, v_addr
     FROM CUSTOMER_REQUEST
     WHERE RequestID = p_RequestID;
 
@@ -160,8 +156,8 @@ BEGIN
 
     -- Create customer + account
     START TRANSACTION;
-      INSERT INTO CUSTOMER (Name, Email, Phone, Address, ApprovedDate, Status, Password)
-      VALUES (v_name, v_email, v_phone, v_addr, SYSDATE(), 'Active', v_password);
+      INSERT INTO CUSTOMER (Name, Email, Phone, Address, ApprovedDate, Status)
+      VALUES (v_name, v_email, v_phone, v_addr, SYSDATE(), 'Active');
       SET v_newCust = LAST_INSERT_ID();
 
       INSERT INTO ACCOUNT (CustomerID, AccountType, Balance, Status)
