@@ -20,22 +20,22 @@ CALL RequestAccount('John Doe', 'john.doe@example.com', '9876543210', '123 Main 
 CALL RequestAccount('Jane Smith', 'jane.smith@example.com', '9988776655', '456 Oak Ave');
 
 -- Approve Account Requests
-SELECT @john_doe_req_id := RequestID FROM CUSTOMER_REQUEST WHERE Name = 'John Doe' AND Status = 'Pending';
+SELECT @john_doe_req_id := RequestID FROM Pending_Requests WHERE Name = 'John Doe';
 CALL ApproveAccount(@john_doe_req_id, 'Savings', (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Alice Brown'));
 
-SELECT @jane_smith_req_id := RequestID FROM CUSTOMER_REQUEST WHERE Name = 'Jane Smith' AND Status = 'Pending';
+SELECT @jane_smith_req_id := RequestID FROM Pending_Requests WHERE Name = 'Jane Smith';
 CALL ApproveAccount(@jane_smith_req_id, 'Checking', (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Alice Brown'));
 
 -- Retrieve Account Numbers
-SELECT @john_doe_acc := AccountNo FROM ACCOUNT WHERE CustomerID = (SELECT CustomerID FROM CUSTOMER WHERE Name = 'John Doe');
-SELECT @jane_smith_acc := AccountNo FROM ACCOUNT WHERE CustomerID = (SELECT CustomerID FROM CUSTOMER WHERE Name = 'Jane Smith');
+SELECT @john_doe_acc := AccountNo FROM Customer_Profile WHERE Name = 'John Doe';
+SELECT @jane_smith_acc := AccountNo FROM Customer_Profile WHERE Name = 'Jane Smith';
 
 -- Deposit some initial funds
 CALL DepositWithLog(@john_doe_acc, 100.00, (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
 CALL DepositWithLog(@jane_smith_acc, 100.00, (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
 
 SELECT '--- Initial Balances ---' AS Report;
-SELECT c.Name, a.AccountNo, a.Balance FROM CUSTOMER c JOIN ACCOUNT a ON c.CustomerID = a.CustomerID WHERE a.AccountNo IN (@john_doe_acc, @jane_smith_acc);
+SELECT Name, AccountNo, Balance FROM Customer_Profile WHERE AccountNo IN (@john_doe_acc, @jane_smith_acc);
 
 -- ==========================================
 -- 2. TESTING TRIGGER: PreventNegativeBalance
@@ -48,13 +48,13 @@ SELECT '--- Attempting Withdrawal Exceeding Balance for John Doe ---' AS Report;
 CALL WithdrawWithApproval(@john_doe_acc, 150.00, (SELECT CustomerID FROM CUSTOMER WHERE Name = 'John Doe'), (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
 
 SELECT '--- John Doe\'s Balance After Failed Over-Withdrawal (Should Be Unchanged) ---' AS Report;
-SELECT c.Name, a.AccountNo, a.Balance FROM CUSTOMER c JOIN ACCOUNT a ON c.CustomerID = a.CustomerID WHERE a.AccountNo IN (@john_doe_acc, @jane_smith_acc);
+SELECT Name, AccountNo, Balance FROM Customer_Profile WHERE AccountNo IN (@john_doe_acc, @jane_smith_acc);
 
 SELECT '--- Attempting Valid Withdrawal for John Doe ---' AS Report;
 CALL WithdrawWithApproval(@john_doe_acc, 50.00, (SELECT CustomerID FROM CUSTOMER WHERE Name = 'John Doe'), (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
 
 SELECT '--- John Doe\'s Balance After Valid Withdrawal ---' AS Report;
-SELECT c.Name, a.AccountNo, a.Balance FROM CUSTOMER c JOIN ACCOUNT a ON c.CustomerID = a.CustomerID WHERE a.AccountNo IN (@john_doe_acc, @jane_smith_acc);
+SELECT Name, AccountNo, Balance FROM Customer_Profile WHERE AccountNo IN (@john_doe_acc, @jane_smith_acc);
 
 -- ==========================================
 -- 3. TESTING TRIGGER: Block_Suspended_Account
@@ -77,7 +77,7 @@ CALL TransferWithApproval(@john_doe_acc, @jane_smith_acc, 10.00, (SELECT Custome
 SELECT '--- Attempting Transfer to Suspended Account ---' AS Report;
 CALL TransferWithApproval(@jane_smith_acc, @john_doe_acc, 10.00, (SELECT CustomerID FROM CUSTOMER WHERE Name = 'Jane Smith'), (SELECT EmployeeID FROM EMPLOYEE WHERE Name = 'Bob Green'));
 
-SELECT c.Name, a.AccountNo, a.Balance FROM CUSTOMER c JOIN ACCOUNT a ON c.CustomerID = a.CustomerID WHERE a.AccountNo IN (@john_doe_acc, @jane_smith_acc);
+SELECT Name, AccountNo, Balance FROM Customer_Profile WHERE AccountNo IN (@john_doe_acc, @jane_smith_acc);
 
 SELECT '--- Reactivating John Doe\'s Account (If Not Already Active) ---' AS Report;
 UPDATE ACCOUNT SET Status = 'Active' WHERE AccountNo = @john_doe_acc AND Status <> 'Active';

@@ -417,36 +417,41 @@ DELIMITER ;
 -- 3. VIEWS
 -- ==========================================
 
+-- Pending_Requests: Shows all pending customer account requests.
+
 CREATE VIEW Pending_Requests AS
 SELECT * FROM CUSTOMER_REQUEST WHERE Status = 'Pending';
 
+-- Customer_Transactions: Shows all approved customer transactions.
 CREATE VIEW Customer_Transactions AS
 SELECT * FROM TRANSACTIONS WHERE Status = 'Approved';
 
+
+-- High_Value_Transactions: Shows transactions with amounts greater than 50000.
 CREATE VIEW High_Value_Transactions AS
 SELECT * FROM TRANSACTIONS WHERE Amount > 50000;
 
+-- Customer_Profile: Joins customer and account information.
 CREATE VIEW Customer_Profile AS
 SELECT c.CustomerID, c.Name, c.Email, c.Phone, c.Address,
        a.AccountNo, a.AccountType, a.Balance, a.Status
 FROM CUSTOMER c
 JOIN ACCOUNT a ON c.CustomerID = a.CustomerID;
 
+
+-- Customer_Balance: Shows customer account balances.
 CREATE VIEW Customer_Balance AS
 SELECT a.CustomerID, a.AccountNo, a.Balance
 FROM ACCOUNT a
 WHERE a.Status = 'Active';
 
+
+-- ActiveCustomerAccounts: Shows active customer accounts.
 CREATE VIEW ActiveCustomerAccounts AS
 SELECT c.CustomerID, c.Name, a.AccountNo, a.AccountType, a.Balance
 FROM CUSTOMER c
 JOIN ACCOUNT a ON c.CustomerID = a.CustomerID
 WHERE c.Status = 'Active' AND a.Status = 'Active';
-
-CREATE VIEW DailyTransactionSummary AS
-SELECT DATE(TransactionDate) AS TxnDate, COUNT(*) AS TotalTxns, SUM(Amount) AS TotalAmount
-FROM TRANSACTIONS
-GROUP BY DATE(TransactionDate);
 
 -- ==========================================
 -- 4. TRIGGERS
