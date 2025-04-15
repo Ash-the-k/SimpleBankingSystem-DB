@@ -166,8 +166,7 @@ The system includes several views to simplify data retrieval:
     * Columns: `CustomerID`, `Name`, `AccountNo`, `AccountType`, `Balance`
 * **ActiveCustomerAccounts**: Shows active customer accounts.
      * Columns: `AccountNo`, `CustomerID`, `AccountType`, `Balance`, `CreatedDate`
-* **DailyTransactionSummary**: Provides a summary of daily transactions.
-    * Columns: `TransactionDate`, `TotalTransactions`, `TotalAmount`
+
 
 ## Triggers
 

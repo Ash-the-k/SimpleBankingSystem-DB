@@ -49,7 +49,6 @@ The system includes several views to simplify data retrieval:
 * **Customer\_Profile**: Joins customer and account information.
 * **Customer\_Balance**: Shows customer account balances.
 * **ActiveCustomerAccounts**: Shows active customer accounts.
-* **DailyTransactionSummary**: Provides a summary of daily transactions.
 
 ## Triggers
 
